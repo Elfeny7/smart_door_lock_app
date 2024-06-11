@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../route/route.dart';
+import '../services/auth_service.dart';
+import '../services/user_service.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.onLoginButton});
   final void Function() onLoginButton;
@@ -9,6 +13,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _pinController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _authService = AuthService();
+
+  void _login() async {
+    final email = _emailController.text;
+    final pin = _pinController.text;
+    final user = await _authService.loginByEmailAndPin(email, pin);
+    if (user != null) {
+      await UserService.saveUser(user);
+      Navigator.pushReplacementNamed(context, doors);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login failed!')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -31,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 50),
                 TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(15),
                       filled: true,
@@ -52,6 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 10),
                 TextField(
+                  controller: _pinController,
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(15),
                       filled: true,
@@ -74,7 +98,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 100),
                 ElevatedButton(
-                  onPressed: widget.onLoginButton,
+                  onPressed: _login,
+                  // onPressed: widget.onLoginButton,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 0, 94, 255),
                     padding: const EdgeInsets.symmetric(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_door_lock_app/route/route.dart';
 import 'package:smart_door_lock_app/views/open_door_screen.dart';
 
 import '../views/doors_screen.dart';
@@ -60,6 +61,12 @@ class _MainAppViewState extends State<MainAppView> {
     }
 
     return MaterialApp(
+      initialRoute: '/',
+      routes: {
+        // splash: (context) => SplashScreen(),
+        login: (context) => LoginScreen(onLoginButton: switchDoorsScreen),
+        doors: (context) => DoorsScreen(onSelectDoorButton: switchOpenDoorScreen),
+      },
       home: Scaffold(
         body: Container(
           decoration: const BoxDecoration(
