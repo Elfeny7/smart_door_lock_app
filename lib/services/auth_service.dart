@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../config/config.dart';
@@ -13,9 +12,9 @@ class AuthService {
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-    debugPrint(response.statusCode.toString());
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+      return responseData['data'];
     } else {
       return null;
     }

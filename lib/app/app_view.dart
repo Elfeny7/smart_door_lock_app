@@ -14,67 +14,24 @@ class MainAppView extends StatefulWidget {
 }
 
 class _MainAppViewState extends State<MainAppView> {
-  var activeScreen = 'login-screen';
-
-  void switchLoginScreen() {
-    setState(() {
-      activeScreen = 'login-screen';
-    });
-  }
-
-  void switchDoorsScreen() {
-    setState(() {
-      activeScreen = 'doors-screen';
-    });
-  }
-
-  void switchOpenDoorScreen() {
-    setState(() {
-      activeScreen = 'open-door-screen';
-    });
-  }
-
-  void switchResultScreen() {
-    setState(() {
-      activeScreen = 'result-screen';
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    Widget screenWidget = LoginScreen(onLoginButton: switchDoorsScreen);
-
-    if (activeScreen == 'login-screen') {
-      screenWidget = LoginScreen(onLoginButton: switchDoorsScreen);
-    }
-
-    if (activeScreen == 'doors-screen') {
-      screenWidget = DoorsScreen(onSelectDoorButton: switchOpenDoorScreen);
-    }
-
-    if (activeScreen == 'open-door-screen') {
-      screenWidget = OpenDoorScreen(onOpenDoorButton: switchResultScreen);
-    }
-
-    if (activeScreen == 'result-screen') {
-      screenWidget = ResultScreen(onFinishButton: switchLoginScreen);
-    }
+    Widget screenWidget = const LoginScreen();
 
     return MaterialApp(
       initialRoute: '/',
       routes: {
         // splash: (context) => SplashScreen(),
-        login: (context) => LoginScreen(onLoginButton: switchDoorsScreen),
-        doors: (context) => DoorsScreen(onSelectDoorButton: switchOpenDoorScreen),
+        login: (context) => const LoginScreen(),
+        doors: (context) => DoorsScreen(
+            userId: ModalRoute.of(context)?.settings.arguments as String,
+            pin: ModalRoute.of(context)?.settings.arguments as String),
+        openDoor: (context) => OpenDoorScreen(
+            door: ModalRoute.of(context)?.settings.arguments
+                as Map<String, dynamic>,
+            pin: ModalRoute.of(context)?.settings.arguments as String),
       },
-      home: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 248, 248, 248),
-          ),
-          child: screenWidget,
-        ),
-      ),
+      home: screenWidget,
     );
   }
 }
